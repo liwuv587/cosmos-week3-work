@@ -80,12 +80,12 @@ function Stargate() {
 		if (!address) return;
 		client.getBalance(address, chain.stakeCurrency.coinMinimalDenom).then(setBalance)
 		client.getAllBalances(address).then((coins) => {
-			let bls   = [];
+			let bls = [];
 			coins.forEach(coin => {
 				bls.push(coin)
 			});
 			setAllBalances(bls)
-		 })
+		})
 
 
 	};
@@ -113,18 +113,18 @@ function Stargate() {
 	// disconnect client Todo
 	const disConnect = async () => {
 		let _client = client;
-		setClient(null)
-		setAddress(null)
-		setAccount(null)
-		setChainId(null)
-		setHeight(null)
-		setBlock(null)
-		setBalance(null)
-		setAllBalances(null)
-		setSequence(null)
+		client && setClient(null)
+		address && setAddress(null)
+		account && setAccount(null)
+		chainId && setChainId(null)
+		height && setHeight(null)
+		block && setBlock(null)
+		balance && setBalance(null)
+		allBalance && setAllBalances(null)
+		sequence && setSequence(null)
 		if (!_client) return;
 		_client.disconnect();
-		
+
 
 	};
 
