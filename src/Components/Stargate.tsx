@@ -51,10 +51,9 @@ function Stargate() {
 	}, [timestamp, address, client]);
 
 	useEffect(() => {
-		if (mnemonic) {
-			//
-		}
-	}, [])
+		if (client) return;
+		disConnect();
+	}, [client])
 
 	// 创建账户 Todo
 	const createAccount = async () => {
@@ -106,21 +105,26 @@ function Stargate() {
 		StargateClient.connect(chain.rpc).then((_client) => {
 
 			setClient(_client);
+			getAddressByMnemonic();
 
 		});
 	};
 
 	// disconnect client Todo
 	const disConnect = async () => {
-		if (!client) return;
-		client.disconnect();
+		let _client = client;
 		setClient(null)
 		setAddress(null)
 		setAccount(null)
 		setChainId(null)
 		setHeight(null)
 		setBlock(null)
+		setBalance(null)
 		setAllBalances(null)
+		setSequence(null)
+		if (!_client) return;
+		_client.disconnect();
+		
 
 	};
 
