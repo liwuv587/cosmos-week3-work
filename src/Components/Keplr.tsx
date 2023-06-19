@@ -24,7 +24,7 @@ function Keplr() {
 
 
 	const [timestamp, setTimestamp] = useState(0);
-	useInterval(() => setTimestamp(new Date().getTime()), 1000);
+	useInterval(() => setTimestamp(new Date().getTime()), 3000);
 
 
 	// 初始化 chain
