@@ -1,8 +1,9 @@
 const osmosis = {
-	chainId: "osmo-test-4",
-	chainName: "osmo-test-4",
-	rpc: "https://rpc-test.osmosis.zone",
-	rest: "https://lcd-test.osmosis.zone",
+	chainId: "osmo-test-5",
+	chainName: "osmo-test-5",
+	rpc: "https://rpc.osmotest5.osmosis.zone",
+	rest: "https://lcd.osmotest5.osmosis.zone",
+   
 	stakeCurrency: {
 		coinDenom: "OSMO",
 		coinMinimalDenom: "uosmo",

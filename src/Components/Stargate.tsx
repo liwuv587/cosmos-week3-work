@@ -1,4 +1,4 @@
-import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
+import { AccountData, DirectSecp256k1HdWallet, coin } from "@cosmjs/proto-signing";
 import {
 	Account,
 	Block,
@@ -11,11 +11,13 @@ import chain from "../config/osmosis";
 import { useInterval } from "../Hooks/useInterval";
 
 function Stargate() {
+	// bamboo sleep enroll isolate fossil flower crunch reopen crop oyster actress album welcome degree faint army eternal rich solve pyramid crisp reduce predict scrub
+	// osmo17p806l6jksjf0zqv3hqxcn6tavapgxcltca85l
 	const [mnemonic, setMnemonic] = useState<string>(localStorage.getItem("mnemonic"));
 	const [address, setAddress] = useState<string>();
 	const [balance, setBalance] = useState<Coin>();
 	const [allBalance, setAllBalances] = useState<Coin[]>();
-	const [client, setClient] = useState<any>();
+	const [client, setClient] = useState<StargateClient>();
 	const [height, setHeight] = useState<number>();
 	const [chainId, setChainId] = useState<string>();
 	const [account, setAccount] = useState<Account>();
@@ -46,33 +48,89 @@ function Stargate() {
 	useEffect(() => {
 		if (!address || !client) return;
 		getOthers();
-	}, [address, client]);
+	}, [timestamp, address, client]);
+
+	useEffect(() => {
+		if (mnemonic) {
+			//
+		}
+	}, [])
 
 	// 创建账户 Todo
-	const createAccount = async () => {};
+	const createAccount = async () => {
+		const wallet = await DirectSecp256k1HdWallet.generate(24, { prefix: chain.bech32Config.bech32PrefixAccAddr });
+		localStorage.setItem("mnemonic", wallet.mnemonic)
+		setMnemonic(wallet.mnemonic);
+	};
 
 	// 通过助记词钱包获得地址 Todo
-	const getAddressByMnemonic = async () => {}
+	const getAddressByMnemonic = async () => {
+
+		const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, { prefix: chain.bech32Config.bech32PrefixAccAddr })
+		wallet.getAccounts().then((accounts) => {
+			console.log(accounts);
+			setAddress(accounts[0].address)
+		})
+		// const accounts = await wallet.getAccounts() ;
+		// console.log(accounts )
+		// setAccount(accounts[0])
+	}
 
 	// 余额查询 Todo
-	const getBalance = async () => {};
+	const getBalance = async () => {
+		if (!address) return;
+		client.getBalance(address, chain.stakeCurrency.coinMinimalDenom).then(setBalance)
+		client.getAllBalances(address).then((coins) => {
+			let bls   = [];
+			coins.forEach(coin => {
+				bls.push(coin)
+			});
+			setAllBalances(bls)
+		 })
+
+
+	};
 
 	// strageClient 基础 api 使用 Todo
-	const getOthers = async () => {};
+	const getOthers = async () => {
+		// get chain id
+		client.getChainId().then(setChainId)
+		client.getAccount(address).then(setAccount)
+		client.getHeight().then(setHeight)
+		client.getBlock().then(setBlock)
+		client.getSequence(address).then(setSequence)
+	};
 
 	// connect client Todo
-	const connect = async () => {};
+	const connect = async () => {
+		StargateClient.connect(chain.rpc).then((_client) => {
+
+			setClient(_client);
+
+		});
+	};
 
 	// disconnect client Todo
-	const disConnect = async () => {};
+	const disConnect = async () => {
+		if (!client) return;
+		client.disconnect();
+		setClient(null)
+		setAddress(null)
+		setAccount(null)
+		setChainId(null)
+		setHeight(null)
+		setBlock(null)
+		setAllBalances(null)
+
+	};
 
 	return (
 		<div className="stargate">
 			<h2>StargateClient</h2>
 			<label>
 				<span>Chain: Osmosis </span>
-				<button onClick={client?.queryClient ? disConnect : connect}>
-					{client?.queryClient ? "断开" : "连接"}
+				<button onClick={client?.disconnect ? disConnect : connect}>
+					{client?.disconnect ? "断开" : "连接"}
 				</button>
 			</label>
 			<div className="weight">
@@ -110,7 +168,7 @@ function Stargate() {
 				</span>
 				&nbsp;
 				{address && (
-					<a href="https://faucet.osmosis.zone/" target="_blank">
+					<a href="https://faucet.osmotest5.osmosis.zone/" target="_blank">
 						获取
 					</a>
 				)}
